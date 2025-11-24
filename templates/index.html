@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏥 Heart Disease Predictor - Medical Diagnostics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Medical Header -->
+    <header class="medical-header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                <h1>CardioPredict AI</h1>
+            </div>
+            <p class="subtitle">Advanced Heart Disease Prediction System</p>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-wrapper">
+        <div class="container">
+            <!-- Introduction Section -->
+            <div class="intro-section">
+                <div class="intro-icon">
+                    <i class="fas fa-stethoscope"></i>
+                </div>
+                <h2>Clinical Assessment Form</h2>
+                <p class="intro-text">Please enter the patient's clinical parameters below for AI-powered cardiovascular risk assessment</p>
+            </div>
+
+            <!-- Result Display -->
+            {% if prediction_result %}
+                <div class="result-box {{ 'result-negative' if 'No' in prediction_result else 'result-positive' }}">
+                    <div class="result-icon">
+                        {% if 'No' in prediction_result %}
+                            <i class="fas fa-check-circle"></i>
+                        {% else %}
+                            <i class="fas fa-exclamation-triangle"></i>
+                        {% endif %}
+                    </div>
+                    <h2 class="result-title">Diagnostic Result</h2>
+                    <h3 class="result-prediction">{{ prediction_result }}</h3>
+                    <p class="result-message">{{ prediction_message }}</p>
+                    <div class="disclaimer">
+                        <i class="fas fa-info-circle"></i>
+                        <p><strong>Medical Disclaimer:</strong> This is an AI-assisted prediction tool and NOT a substitute for professional medical diagnosis. Please consult a qualified healthcare provider.</p>
+                    </div>
+                </div>
+            {% elif error %}
+                <div class="result-box result-error">
+                    <div class="result-icon">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <h2 class="result-title">Error</h2>
+                    <p class="result-message">{{ error }}</p>
+                </div>
+            {% endif %}
+
+            <!-- Prediction Form -->
+            <form action="/predict" method="POST" class="prediction-form">
+                <!-- Patient Demographics -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-user"></i> Patient Demographics
+                    </h3>
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="age">
+                                <i class="fas fa-calendar-alt"></i> Age (years)
+                            </label>
+                            <input type="number" id="age" name="age" min="1" max="120" required 
+                                   value="{{ form_data.age if form_data else '' }}" 
+                                   placeholder="e.g., 55">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="sex">
+                                <i class="fas fa-venus-mars"></i> Sex
+                            </label>
+                            <select id="sex" name="sex" required>
+                                <option value="">Select...</option>
+                                <option value="1" {{ 'selected' if form_data and form_data.sex == '1' else '' }}>Male</option>
+                                <option value="0" {{ 'selected' if form_data and form_data.sex == '0' else '' }}>Female</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cardiac Symptoms -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-heart-pulse"></i> Cardiac Symptoms
+                    </h3>
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="cp">
+                                <i class="fas fa-heartbeat"></i> Chest Pain Type
+                            </label>
+                            <select id="cp" name="cp" required>
+                                <option value="">Select...</option>
+                                <option value="0" {{ 'selected' if form_data and form_data.cp == '0' else '' }}>Typical Angina</option>
+                                <option value="1" {{ 'selected' if form_data and form_data.cp == '1' else '' }}>Atypical Angina</option>
+                                <option value="2" {{ 'selected' if form_data and form_data.cp == '2' else '' }}>Non-Anginal Pain</option>
+                                <option value="3" {{ 'selected' if form_data and form_data.cp == '3' else '' }}>Asymptomatic</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="exang">
+                                <i class="fas fa-running"></i> Exercise Induced Angina
+                            </label>
+                            <select id="exang" name="exang" required>
+                                <option value="">Select...</option>
+                                <option value="1" {{ 'selected' if form_data and form_data.exang == '1' else '' }}>Yes</option>
+                                <option value="0" {{ 'selected' if form_data and form_data.exang == '0' else '' }}>No</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vital Signs -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-thermometer"></i> Vital Signs & Lab Results
+                    </h3>
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="trestbps">
+                                <i class="fas fa-notes-medical"></i> Resting Blood Pressure
+                            </label>
+                            <input type="number" id="trestbps" name="trestbps" min="80" max="200" required 
+                                   value="{{ form_data.trestbps if form_data else '' }}" 
+                                   placeholder="mm Hg (e.g., 120)">
+                            <span class="input-hint">Normal: 90-120 mm Hg</span>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="chol">
+                                <i class="fas fa-vial"></i> Serum Cholesterol
+                            </label>
+                            <input type="number" id="chol" name="chol" min="100" max="600" required 
+                                   value="{{ form_data.chol if form_data else '' }}" 
+                                   placeholder="mg/dl (e.g., 200)">
+                            <span class="input-hint">Normal: < 200 mg/dl</span>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="fbs">
+                                <i class="fas fa-droplet"></i> Fasting Blood Sugar
+                            </label>
+                            <select id="fbs" name="fbs" required>
+                                <option value="">Select...</option>
+                                <option value="1" {{ 'selected' if form_data and form_data.fbs == '1' else '' }}>> 120 mg/dl (High)</option>
+                                <option value="0" {{ 'selected' if form_data and form_data.fbs == '0' else '' }}>≤ 120 mg/dl (Normal)</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="thalach">
+                                <i class="fas fa-heart-circle-bolt"></i> Max Heart Rate Achieved
+                            </label>
+                            <input type="number" id="thalach" name="thalach" min="70" max="220" required 
+                                   value="{{ form_data.thalach if form_data else '' }}" 
+                                   placeholder="bpm (e.g., 150)">
+                            <span class="input-hint">Normal: 60-100 bpm</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ECG & Cardiac Tests -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-file-waveform"></i> ECG & Cardiac Tests
+                    </h3>
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="restecg">
+                                <i class="fas fa-wave-square"></i> Resting ECG Results
+                            </label>
+                            <select id="restecg" name="restecg" required>
+                                <option value="">Select...</option>
+                                <option value="0" {{ 'selected' if form_data and form_data.restecg == '0' else '' }}>Normal</option>
+                                <option value="1" {{ 'selected' if form_data and form_data.restecg == '1' else '' }}>ST-T Wave Abnormality</option>
+                                <option value="2" {{ 'selected' if form_data and form_data.restecg == '2' else '' }}>Left Ventricular Hypertrophy</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="oldpeak">
+                                <i class="fas fa-chart-line"></i> ST Depression (Oldpeak)
+                            </label>
+                            <input type="number" id="oldpeak" name="oldpeak" step="0.1" min="0" max="10" required 
+                                   value="{{ form_data.oldpeak if form_data else '' }}" 
+                                   placeholder="e.g., 1.5">
+                            <span class="input-hint">Exercise vs Rest</span>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="slope">
+                                <i class="fas fa-arrow-trend-up"></i> ST Segment Slope
+                            </label>
+                            <select id="slope" name="slope" required>
+                                <option value="">Select...</option>
+                                <option value="0" {{ 'selected' if form_data and form_data.slope == '0' else '' }}>Upsloping</option>
+                                <option value="1" {{ 'selected' if form_data and form_data.slope == '1' else '' }}>Flat</option>
+                                <option value="2" {{ 'selected' if form_data and form_data.slope == '2' else '' }}>Downsloping</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="ca">
+                                <i class="fas fa-x-ray"></i> Major Vessels (Fluoroscopy)
+                            </label>
+                            <select id="ca" name="ca" required>
+                                <option value="">Select...</option>
+                                <option value="0" {{ 'selected' if form_data and form_data.ca == '0' else '' }}>0 vessels</option>
+                                <option value="1" {{ 'selected' if form_data and form_data.ca == '1' else '' }}>1 vessel</option>
+                                <option value="2" {{ 'selected' if form_data and form_data.ca == '2' else '' }}>2 vessels</option>
+                                <option value="3" {{ 'selected' if form_data and form_data.ca == '3' else '' }}>3 vessels</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="thal">
+                                <i class="fas fa-lungs"></i> Thalassemia
+                            </label>
+                            <select id="thal" name="thal" required>
+                                <option value="">Select...</option>
+                                <option value="3" {{ 'selected' if form_data and form_data.thal == '3' else '' }}>Normal</option>
+                                <option value="6" {{ 'selected' if form_data and form_data.thal == '6' else '' }}>Fixed Defect</option>
+                                <option value="7" {{ 'selected' if form_data and form_data.thal == '7' else '' }}>Reversible Defect</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Buttons -->
+                <div class="button-group">
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-brain"></i> Analyze & Predict
+                    </button>
+                    <button type="reset" class="btn-secondary">
+                        <i class="fas fa-rotate-left"></i> Reset Form
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="medical-footer">
+        <p><i class="fas fa-shield-halved"></i> Secure Medical Data Processing </p>
+        <p>&copy; 2025 CardioPredict AI - Advanced Cardiovascular Diagnostics</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
