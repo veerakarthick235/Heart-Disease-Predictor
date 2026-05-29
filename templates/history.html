@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Prediction History — CardioPredict AI{% endblock %}
+{% block meta_description %}View your cardiovascular risk prediction history and track trends over time.{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <h1 class="page-title">
+                <i class="fas fa-clock-rotate-left"></i> Prediction History
+            </h1>
+            <p class="page-subtitle">All your cardiovascular risk assessments in one place</p>
+        </div>
+        <a href="{{ url_for('predict_page') }}" class="page-header-action" id="newPredictionBtn">
+            <i class="fas fa-plus"></i> New Prediction
+        </a>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+        <div class="stat-card stat-card-blue" id="statTotal">
+            <div class="stat-card-icon"><i class="fas fa-list-check"></i></div>
+            <div class="stat-card-body">
+                <span class="stat-card-value">{{ stats.total }}</span>
+                <span class="stat-card-label">Total Predictions</span>
+            </div>
+        </div>
+        <div class="stat-card stat-card-red" id="statHighRisk">
+            <div class="stat-card-icon"><i class="fas fa-triangle-exclamation"></i></div>
+            <div class="stat-card-body">
+                <span class="stat-card-value">{{ stats.high_risk }}</span>
+                <span class="stat-card-label">High Risk</span>
+            </div>
+        </div>
+        <div class="stat-card stat-card-green" id="statLowRisk">
+            <div class="stat-card-icon"><i class="fas fa-circle-check"></i></div>
+            <div class="stat-card-body">
+                <span class="stat-card-value">{{ stats.low_risk }}</span>
+                <span class="stat-card-label">Low Risk</span>
+            </div>
+        </div>
+        <div class="stat-card stat-card-purple" id="statAvgProb">
+            <div class="stat-card-icon"><i class="fas fa-percent"></i></div>
+            <div class="stat-card-body">
+                <span class="stat-card-value">{{ stats.avg_probability }}%</span>
+                <span class="stat-card-label">Avg Risk Probability</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Table -->
+    {% if predictions %}
+    <div class="card history-card">
+        <div class="card-header">
+            <h2 class="card-title"><i class="fas fa-table"></i> All Predictions</h2>
+            <span class="card-badge">{{ predictions|length }} records</span>
+        </div>
+
+        <div class="table-scroll">
+            <table class="history-table" id="historyTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Date &amp; Time</th>
+                        <th>Result</th>
+                        <th>Probability</th>
+                        <th>Age</th>
+                        <th>Sex</th>
+                        <th>Chest Pain</th>
+                        <th>BP (mmHg)</th>
+                        <th>Cholesterol</th>
+                        <th>Max HR</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pred in predictions %}
+                    <tr class="history-row {% if pred.prediction_value == 1 %}row-high-risk{% else %}row-low-risk{% endif %}">
+                        <td class="row-num">{{ loop.index }}</td>
+                        <td class="row-date">{{ pred.created_at | format_date }}</td>
+                        <td>
+                            {% if pred.prediction_value == 1 %}
+                                <span class="risk-badge risk-high">
+                                    <i class="fas fa-triangle-exclamation"></i> High Risk
+                                </span>
+                            {% else %}
+                                <span class="risk-badge risk-low">
+                                    <i class="fas fa-circle-check"></i> Low Risk
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="prob-bar-wrap">
+                                <div class="prob-bar">
+                                    <div class="prob-fill {% if pred.probability > 0.5 %}prob-fill-red{% else %}prob-fill-green{% endif %}"
+                                         style="width: {{ (pred.probability * 100)|round|int }}%"></div>
+                                </div>
+                                <span class="prob-text">{{ (pred.probability * 100)|round(1) }}%</span>
+                            </div>
+                        </td>
+                        <td>{{ pred.inputs.age }}</td>
+                        <td>{{ 'Male' if pred.inputs.sex == '1' else 'Female' }}</td>
+                        <td>
+                            {% set cp_map = {'0': 'Typical Angina', '1': 'Atypical Angina', '2': 'Non-Anginal', '3': 'Asymptomatic'} %}
+                            {{ cp_map.get(pred.inputs.cp, pred.inputs.cp) }}
+                        </td>
+                        <td>{{ pred.inputs.trestbps }}</td>
+                        <td>{{ pred.inputs.chol }}</td>
+                        <td>{{ pred.inputs.thalach }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% else %}
+    <!-- Empty State -->
+    <div class="empty-state" id="emptyHistory">
+        <div class="empty-state-icon">
+            <i class="fas fa-clipboard-list"></i>
+        </div>
+        <h3 class="empty-state-title">No Predictions Yet</h3>
+        <p class="empty-state-text">Run your first cardiovascular risk assessment to see results here.</p>
+        <a href="{{ url_for('predict_page') }}" class="btn-primary-sm" id="emptyStateBtn">
+            <i class="fas fa-brain"></i> Start Predicting
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

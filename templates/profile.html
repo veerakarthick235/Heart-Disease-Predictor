@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Profile — CardioPredict AI{% endblock %}
+{% block meta_description %}Manage your CardioPredict AI profile and view your account information.{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <h1 class="page-title">
+                <i class="fas fa-user-circle"></i> My Profile
+            </h1>
+            <p class="page-subtitle">Account information and prediction statistics</p>
+        </div>
+        <a href="{{ url_for('auth.logout') }}" class="page-header-action page-header-danger" id="profileLogoutBtn">
+            <i class="fas fa-right-from-bracket"></i> Logout
+        </a>
+    </div>
+
+    <div class="profile-grid">
+        <!-- Account Info Card -->
+        <div class="card profile-card" id="profileInfoCard">
+            <div class="card-header">
+                <h2 class="card-title"><i class="fas fa-id-card"></i> Account Details</h2>
+            </div>
+            <div class="profile-avatar-wrap">
+                <div class="profile-avatar" id="profileAvatar">
+                    {{ current_user.full_name[0].upper() }}
+                </div>
+                <div class="profile-avatar-info">
+                    <h3 class="profile-name">{{ current_user.full_name }}</h3>
+                    <span class="profile-role-badge">
+                        <i class="fas fa-stethoscope"></i> Medical User
+                    </span>
+                </div>
+            </div>
+
+            <div class="profile-details">
+                <div class="profile-detail-row">
+                    <span class="profile-detail-label">
+                        <i class="fas fa-envelope"></i> Email
+                    </span>
+                    <span class="profile-detail-value">{{ current_user.email }}</span>
+                </div>
+                <div class="profile-detail-row">
+                    <span class="profile-detail-label">
+                        <i class="fas fa-calendar-plus"></i> Member Since
+                    </span>
+                    <span class="profile-detail-value">{{ current_user.created_at | format_date_short }}</span>
+                </div>
+                <div class="profile-detail-row">
+                    <span class="profile-detail-label">
+                        <i class="fas fa-clock"></i> Last Login
+                    </span>
+                    <span class="profile-detail-value">
+                        {% if current_user.last_login %}
+                            {{ current_user.last_login | format_date }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="profile-detail-row">
+                    <span class="profile-detail-label">
+                        <i class="fas fa-circle-check"></i> Status
+                    </span>
+                    <span class="profile-detail-value">
+                        <span class="status-badge status-active">Active</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Card -->
+        <div class="card profile-card" id="profileStatsCard">
+            <div class="card-header">
+                <h2 class="card-title"><i class="fas fa-chart-pie"></i> Prediction Statistics</h2>
+            </div>
+
+            <div class="profile-stats-grid">
+                <div class="profile-stat-box profile-stat-blue">
+                    <i class="fas fa-list-check"></i>
+                    <span class="profile-stat-value">{{ stats.total }}</span>
+                    <span class="profile-stat-label">Total Predictions</span>
+                </div>
+                <div class="profile-stat-box profile-stat-red">
+                    <i class="fas fa-triangle-exclamation"></i>
+                    <span class="profile-stat-value">{{ stats.high_risk }}</span>
+                    <span class="profile-stat-label">High Risk</span>
+                </div>
+                <div class="profile-stat-box profile-stat-green">
+                    <i class="fas fa-circle-check"></i>
+                    <span class="profile-stat-value">{{ stats.low_risk }}</span>
+                    <span class="profile-stat-label">Low Risk</span>
+                </div>
+                <div class="profile-stat-box profile-stat-purple">
+                    <i class="fas fa-percent"></i>
+                    <span class="profile-stat-value">{{ stats.avg_probability }}%</span>
+                    <span class="profile-stat-label">Avg Risk Probability</span>
+                </div>
+            </div>
+
+            {% if stats.total > 0 %}
+            <div class="profile-risk-bar-section">
+                <h4 class="risk-bar-title">Risk Distribution</h4>
+                <div class="risk-distribution-bar">
+                    {% set high_pct = ((stats.high_risk / stats.total) * 100) | round | int %}
+                    {% set low_pct = 100 - high_pct %}
+                    <div class="risk-dist-fill risk-dist-high" style="width: {{ high_pct }}%" title="High Risk: {{ high_pct }}%">
+                        {% if high_pct > 15 %}{{ high_pct }}%{% endif %}
+                    </div>
+                    <div class="risk-dist-fill risk-dist-low" style="width: {{ low_pct }}%" title="Low Risk: {{ low_pct }}%">
+                        {% if low_pct > 15 %}{{ low_pct }}%{% endif %}
+                    </div>
+                </div>
+                <div class="risk-dist-legend">
+                    <span><span class="legend-dot legend-dot-red"></span> High Risk ({{ high_pct }}%)</span>
+                    <span><span class="legend-dot legend-dot-green"></span> Low Risk ({{ low_pct }}%)</span>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="profile-actions">
+                <a href="{{ url_for('predict_page') }}" class="profile-action-btn profile-action-primary" id="profilePredictBtn">
+                    <i class="fas fa-brain"></i> New Prediction
+                </a>
+                <a href="{{ url_for('history') }}" class="profile-action-btn profile-action-secondary" id="profileHistoryBtn">
+                    <i class="fas fa-clock-rotate-left"></i> View History
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

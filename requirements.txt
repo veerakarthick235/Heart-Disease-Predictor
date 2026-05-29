@@ -1,0 +1,14 @@
+flask
+pandas
+scikit-learn
+numpy
+joblib
+gunicorn
+flask-login
+flask-bcrypt
+flask-jwt-extended
+pymongo[srv]
+python-dotenv
+flask-limiter
+email-validator
+dnspython

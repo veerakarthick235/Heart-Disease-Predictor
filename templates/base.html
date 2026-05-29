@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CardioPredict AI{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}AI-powered cardiovascular risk assessment platform{% endblock %}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="nav-logo">
+                <i class="fas fa-heartbeat nav-logo-icon"></i>
+                <span class="nav-logo-text">CardioPredict <span class="nav-logo-ai">AI</span></span>
+            </a>
+
+            <div class="nav-links" id="navLinks">
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('predict_page') }}" class="nav-link {% if request.endpoint == 'predict_page' %}active{% endif %}">
+                        <i class="fas fa-brain"></i> Predict
+                    </a>
+                    <a href="{{ url_for('history') }}" class="nav-link {% if request.endpoint == 'history' %}active{% endif %}">
+                        <i class="fas fa-clock-rotate-left"></i> History
+                    </a>
+                    <a href="{{ url_for('auth.profile') }}" class="nav-link {% if request.endpoint == 'auth.profile' %}active{% endif %}">
+                        <i class="fas fa-user-circle"></i> Profile
+                    </a>
+                    <a href="{{ url_for('auth.logout') }}" class="nav-link nav-logout">
+                        <i class="fas fa-right-from-bracket"></i> Logout
+                    </a>
+                    <div class="nav-user-badge">
+                        <i class="fas fa-user"></i>
+                        <span>{{ current_user.full_name.split()[0] }}</span>
+                    </div>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="nav-link">Login</a>
+                    <a href="{{ url_for('auth.register') }}" class="nav-btn-primary">Get Started</a>
+                {% endif %}
+            </div>
+
+            <button class="nav-hamburger" id="navHamburger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-container" id="flashContainer">
+                {% for category, message in messages %}
+                    <div class="flash flash-{{ category }}" role="alert">
+                        <i class="fas {% if category == 'success' %}fa-circle-check{% elif category == 'error' %}fa-circle-xmark{% elif category == 'info' %}fa-circle-info{% else %}fa-triangle-exclamation{% endif %}"></i>
+                        <span>{{ message }}</span>
+                        <button class="flash-close" onclick="this.parentElement.remove()" aria-label="Close">
+                            <i class="fas fa-xmark"></i>
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <i class="fas fa-heartbeat"></i>
+                <span>CardioPredict AI</span>
+            </div>
+            <p class="footer-disclaimer">
+                <i class="fas fa-shield-halved"></i>
+                This tool is for educational purposes only and is NOT a substitute for professional medical advice.
+            </p>
+            <p class="footer-copy">&copy; 2025 CardioPredict AI &mdash; Advanced Cardiovascular Diagnostics</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

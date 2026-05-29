@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}Create Account — CardioPredict AI{% endblock %}
+{% block meta_description %}Register for CardioPredict AI and start assessing cardiovascular risk with AI-powered precision.{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <!-- Left Panel — Branding -->
+    <div class="auth-left">
+        <div class="auth-left-inner">
+            <div class="auth-brand">
+                <i class="fas fa-heartbeat auth-brand-icon"></i>
+                <h1 class="auth-brand-name">CardioPredict AI</h1>
+                <p class="auth-brand-tagline">Advanced Heart Disease Prediction Platform</p>
+            </div>
+
+            <div class="auth-left-features">
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon"><i class="fas fa-infinity"></i></div>
+                    <div>
+                        <h4>Unlimited Predictions</h4>
+                        <p>Run as many assessments as you need</p>
+                    </div>
+                </div>
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon"><i class="fas fa-database"></i></div>
+                    <div>
+                        <h4>Cloud Storage</h4>
+                        <p>All results saved to your private account</p>
+                    </div>
+                </div>
+                <div class="auth-feature-item">
+                    <div class="auth-feature-icon"><i class="fas fa-chart-bar"></i></div>
+                    <div>
+                        <h4>Analytics Dashboard</h4>
+                        <p>Stats and trends from your prediction history</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="auth-left-footer">
+                <p>© 2025 CardioPredict AI</p>
+            </div>
+        </div>
+        <div class="auth-orb auth-orb-1"></div>
+        <div class="auth-orb auth-orb-2"></div>
+    </div>
+
+    <!-- Right Panel — Form -->
+    <div class="auth-right">
+        <div class="auth-form-container">
+            <div class="auth-form-header">
+                <h2 class="auth-form-title">Create your account</h2>
+                <p class="auth-form-subtitle">Free forever. No credit card required.</p>
+            </div>
+
+            <form action="{{ url_for('auth.register') }}" method="POST" class="auth-form" id="registerForm" novalidate>
+                <!-- Full Name -->
+                <div class="form-field">
+                    <label for="reg_full_name" class="field-label">
+                        <i class="fas fa-user"></i> Full Name
+                    </label>
+                    <div class="field-input-wrap">
+                        <input
+                            type="text"
+                            id="reg_full_name"
+                            name="full_name"
+                            class="field-input"
+                            placeholder="Dr. Jane Smith"
+                            value="{{ full_name or '' }}"
+                            autocomplete="name"
+                            required
+                            minlength="2"
+                        >
+                        <div class="field-status-icon"></div>
+                    </div>
+                    <span class="field-error" id="fullNameError"></span>
+                </div>
+
+                <!-- Email -->
+                <div class="form-field">
+                    <label for="reg_email" class="field-label">
+                        <i class="fas fa-envelope"></i> Email Address
+                    </label>
+                    <div class="field-input-wrap">
+                        <input
+                            type="email"
+                            id="reg_email"
+                            name="email"
+                            class="field-input"
+                            placeholder="you@example.com"
+                            value="{{ email or '' }}"
+                            autocomplete="email"
+                            required
+                        >
+                        <div class="field-status-icon"></div>
+                    </div>
+                    <span class="field-error" id="regEmailError"></span>
+                </div>
+
+                <!-- Password -->
+                <div class="form-field">
+                    <label for="reg_password" class="field-label">
+                        <i class="fas fa-lock"></i> Password
+                    </label>
+                    <div class="field-input-wrap">
+                        <input
+                            type="password"
+                            id="reg_password"
+                            name="password"
+                            class="field-input"
+                            placeholder="Min 8 chars, 1 uppercase, 1 number"
+                            autocomplete="new-password"
+                            required
+                        >
+                        <button type="button" class="password-toggle" onclick="togglePassword('reg_password', this)" aria-label="Toggle password visibility">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <!-- Password Strength Bar -->
+                    <div class="strength-bar-wrap" id="strengthBarWrap">
+                        <div class="strength-bar">
+                            <div class="strength-fill" id="strengthFill"></div>
+                        </div>
+                        <span class="strength-label" id="strengthLabel">Password strength</span>
+                    </div>
+                    <span class="field-error" id="regPasswordError"></span>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="form-field">
+                    <label for="reg_confirm_password" class="field-label">
+                        <i class="fas fa-lock-open"></i> Confirm Password
+                    </label>
+                    <div class="field-input-wrap">
+                        <input
+                            type="password"
+                            id="reg_confirm_password"
+                            name="confirm_password"
+                            class="field-input"
+                            placeholder="Repeat your password"
+                            autocomplete="new-password"
+                            required
+                        >
+                        <div class="field-status-icon"></div>
+                    </div>
+                    <span class="field-error" id="confirmPasswordError"></span>
+                </div>
+
+                <button type="submit" class="auth-submit-btn" id="registerSubmit">
+                    <span class="btn-text"><i class="fas fa-user-plus"></i> Create Account</span>
+                    <span class="btn-loader hidden"><i class="fas fa-circle-notch fa-spin"></i></span>
+                </button>
+            </form>
+
+            <div class="auth-divider">
+                <span>Already have an account?</span>
+            </div>
+
+            <a href="{{ url_for('auth.login') }}" class="auth-alt-btn" id="goToLogin">
+                <i class="fas fa-right-to-bracket"></i> Sign In Instead
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

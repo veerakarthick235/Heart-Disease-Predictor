@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}CardioPredict AI — AI-Powered Heart Disease Risk Assessment{% endblock %}
+{% block meta_description %}Detect cardiovascular risk early with our advanced AI. Secure, private, instant results backed by machine learning.{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="landing-hero">
+    <div class="hero-bg-orb hero-orb-1"></div>
+    <div class="hero-bg-orb hero-orb-2"></div>
+    <div class="hero-bg-orb hero-orb-3"></div>
+
+    <div class="hero-container">
+        <div class="hero-badge">
+            <i class="fas fa-shield-heart"></i>
+            <span>Powered by Machine Learning</span>
+        </div>
+
+        <h1 class="hero-title">
+            Predict Heart Disease Risk
+            <span class="hero-title-gradient">with AI Precision</span>
+        </h1>
+
+        <p class="hero-subtitle">
+            Enter clinical parameters and get an instant, AI-powered cardiovascular risk assessment.
+            Secure, private, and backed by a trained Random Forest model.
+        </p>
+
+        <div class="hero-cta">
+            <a href="{{ url_for('auth.register') }}" class="cta-primary" id="heroGetStarted">
+                <i class="fas fa-rocket"></i>
+                Get Started Free
+            </a>
+            <a href="{{ url_for('auth.login') }}" class="cta-secondary" id="heroLogin">
+                <i class="fas fa-right-to-bracket"></i>
+                Sign In
+            </a>
+        </div>
+
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <span class="hero-stat-value">13</span>
+                <span class="hero-stat-label">Clinical Parameters</span>
+            </div>
+            <div class="hero-stat-divider"></div>
+            <div class="hero-stat">
+                <span class="hero-stat-value">~85%</span>
+                <span class="hero-stat-label">Model Accuracy</span>
+            </div>
+            <div class="hero-stat-divider"></div>
+            <div class="hero-stat">
+                <span class="hero-stat-value">< 1s</span>
+                <span class="hero-stat-label">Instant Results</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Animated ECG Line -->
+    <div class="ecg-container">
+        <svg class="ecg-line" viewBox="0 0 1200 100" preserveAspectRatio="none">
+            <polyline class="ecg-path" points="0,50 100,50 130,50 150,10 170,90 190,50 220,50 250,50 280,50 310,50 340,50 370,10 390,90 410,50 440,50 470,50 500,50 530,50 560,50 590,10 610,90 630,50 660,50 690,50 720,50 750,50 780,50 810,10 830,90 850,50 880,50 910,50 940,50 970,50 1000,50 1030,50 1060,10 1080,90 1100,50 1130,50 1160,50 1200,50"/>
+        </svg>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="features-container">
+        <div class="section-label">
+            <i class="fas fa-star"></i> Key Features
+        </div>
+        <h2 class="section-title">Everything You Need for Cardiac Risk Assessment</h2>
+        <p class="section-subtitle">A complete platform built for healthcare professionals and researchers</p>
+
+        <div class="features-grid">
+            <div class="feature-card" id="featureAI">
+                <div class="feature-icon-wrap feature-icon-red">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3 class="feature-title">AI-Powered Prediction</h3>
+                <p class="feature-desc">Random Forest model trained on the Cleveland Heart Disease dataset. Get probability scores and risk classification instantly.</p>
+            </div>
+
+            <div class="feature-card" id="featureSecure">
+                <div class="feature-icon-wrap feature-icon-blue">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3 class="feature-title">Secure & Private</h3>
+                <p class="feature-desc">All data encrypted. Passwords hashed with bcrypt. JWT-based sessions. Your predictions are private to your account only.</p>
+            </div>
+
+            <div class="feature-card" id="featureHistory">
+                <div class="feature-icon-wrap feature-icon-purple">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 class="feature-title">Prediction History</h3>
+                <p class="feature-desc">Track every assessment you run. View trends, compare results over time, and monitor changing risk profiles.</p>
+            </div>
+
+            <div class="feature-card" id="featureCloud">
+                <div class="feature-icon-wrap feature-icon-green">
+                    <i class="fas fa-cloud"></i>
+                </div>
+                <h3 class="feature-title">Cloud-Backed</h3>
+                <p class="feature-desc">Powered by MongoDB Atlas. Your data is always available, anywhere, with enterprise-grade reliability and uptime.</p>
+            </div>
+
+            <div class="feature-card" id="featureParams">
+                <div class="feature-icon-wrap feature-icon-orange">
+                    <i class="fas fa-stethoscope"></i>
+                </div>
+                <h3 class="feature-title">13 Clinical Parameters</h3>
+                <p class="feature-desc">Analyzes age, cholesterol, ECG results, chest pain type, blood pressure, and more for comprehensive assessment.</p>
+            </div>
+
+            <div class="feature-card" id="featureFree">
+                <div class="feature-icon-wrap feature-icon-cyan">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <h3 class="feature-title">Free to Use</h3>
+                <p class="feature-desc">No credit card required. Sign up in seconds and get unlimited predictions with full history tracking.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="how-section">
+    <div class="how-container">
+        <div class="section-label">
+            <i class="fas fa-map"></i> How It Works
+        </div>
+        <h2 class="section-title">Three Simple Steps</h2>
+
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-number">01</div>
+                <div class="step-icon"><i class="fas fa-user-plus"></i></div>
+                <h3 class="step-title">Create Account</h3>
+                <p class="step-desc">Register with your email and password. Your account is secured with bcrypt encryption.</p>
+            </div>
+            <div class="step-arrow"><i class="fas fa-arrow-right"></i></div>
+            <div class="step-card">
+                <div class="step-number">02</div>
+                <div class="step-icon"><i class="fas fa-clipboard-list"></i></div>
+                <h3 class="step-title">Enter Parameters</h3>
+                <p class="step-desc">Fill in 13 clinical values including vitals, ECG results, and patient demographics.</p>
+            </div>
+            <div class="step-arrow"><i class="fas fa-arrow-right"></i></div>
+            <div class="step-card">
+                <div class="step-number">03</div>
+                <div class="step-icon"><i class="fas fa-chart-pie"></i></div>
+                <h3 class="step-title">Get Results</h3>
+                <p class="step-desc">Receive instant AI-powered risk assessment with probability score, saved to your history.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Banner -->
+<section class="cta-banner">
+    <div class="cta-banner-orb"></div>
+    <div class="cta-banner-container">
+        <h2 class="cta-banner-title">Ready to Assess Cardiovascular Risk?</h2>
+        <p class="cta-banner-subtitle">Join thousands of healthcare professionals using CardioPredict AI</p>
+        <a href="{{ url_for('auth.register') }}" class="cta-primary" id="ctaBannerBtn">
+            <i class="fas fa-rocket"></i>
+            Start for Free
+        </a>
+    </div>
+</section>
+{% endblock %}
